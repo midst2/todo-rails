@@ -5,14 +5,14 @@
 <div id="hero" class="flex justify-between">
   <div id="undone"  class="w-full h-max flex">
     <%# HIGH PRIORITY %>
-    <% if @undone.any? || @done.any?%>
+    <% if @undone.where(priority: :High).any?%>
     <div id="todos" class="m-5">
       <div class="flex flex-col gap-2">
         <div class="flex justify-around items-center w-max gap-2">
           <span class="bg-red-200 rounded-sm p-1">High Priority</span>
           <span class="text-gray-500"><%= @undone.where(priority: :High).size%></span>
         </div>
-          <div class="">
+          <div>
             <% @undone.where(priority: :High).each do |todo| %>
                 <%= render todo %>
             <% end %>
@@ -20,43 +20,47 @@
           </div>
         </div>
       </div>
+      <%end %>
+    <% if @undone.where(priority: :Medium).any? %>
     <div id="todos" class="m-5">
       <div class="flex flex-col gap-2">
         <div class="flex justify-around items-center w-max gap-2">
           <span class="bg-yellow-200 rounded-sm p-1">Medium Priority</span>
           <span class="text-gray-500"><%= @undone.where(priority: :Medium).size%></span>
         </div>
-          <div class="">
+          <div>
             <% @undone.where(priority: :Medium).each do |todo| %>
                 <%= render todo %>
             <% end %>
-          
           </div>
         </div>
-      </div>
+    </div>
+    <%end %>
+    <%if @undone.where(priority: :Low).any? %>
     <div id="todos" class="m-5">
       <div class="flex flex-col gap-2">
         <div class="flex justify-around items-center w-full gap-2">
           <span class="bg-green-200 rounded-sm p-1">Low Priority</span>
           <span class="text-gray-500"><%= @undone.where(priority: :Low).size%></span>
         </div>
-          <div class="">
+          <div>
             <% @undone.where(priority: :Low).each do |todo| %>
                 <%= render todo %>
             <% end %>
-          
           </div>
         </div>
       </div>
-    </div>
+      <%end %>
+  </div>
   <div id="done">
+    <%if @done.any? %>
     <div id="todos" class="m-5">
       <div class="flex flex-col gap-2">
         <div class="flex items-center w-full gap-2">
           <span class="bg-gray-200 rounded-sm p-1">Done</span>
           <span class="text-gray-500"><%= @done.size%></span>
         </div>
-          <div class="">
+          <div >
             <% @done.each do |todo| %>
                 <%= render todo %>
             <% end %>
@@ -64,8 +68,6 @@
           </div>
         </div>
       </div>
-
-  
+    <%end  %>
   </div>
-      <% end %>
 </div>
