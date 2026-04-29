@@ -5,7 +5,7 @@
 
       <ul class="list-disc ml-6">
         <% todo.errors.each do |error| %>
-          <li><%= error.full_message %></li>ß
+          <li><%= error.full_message %></li>
         <% end %>
       </ul>
     </div>
@@ -15,14 +15,28 @@
     <%= form.label :content %>
     <%= form.textarea :content, rows: 4, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": todo.errors[:content].none?, "border-red-400 focus:outline-red-600": todo.errors[:content].any?}] %> 
   </div>
+  <div class="my-5">
+      <%= form.label :folder %>
+      <%=form.text_field :folder , placeholder:"default" ,class:"block shadow-sm border rounded-md px-3 py-2 border-gray-400"%>
+    </div>
+  <div class="my-5">
+
+  <div class="my-5 flex flex-col w-max">
+    <%= form.label :priority %>
+    <%= form.select :priority,
+      Todo.priorities.keys.map { |p| [p.capitalize, p] },
+      {},
+      class: "block px-3 py-2 border border-gray-400 rounded-md shadow-sm" %>
+  </div>
 
   <div class="my-5">
-  <%= form.label :priority %>
-
-  <%= form.select :priority,
-    Todo.priorities.keys.map { |p| [p.capitalize, p] },
-    {},
-    class: "border rounded px-2 py-1" %>
+    <%= form.label :due_date%>
+    <% if params[:date].presence %>
+      <%= form.date_field :due_date ,value:params[:date],  class:"block px-3 py-2 border border-gray-400 shadow-sm rounded-lg "%>
+      <%else %>
+      <%= form.date_field :due_date ,  class:"block px-3 py-2 border border-gray-400 shadow-sm rounded-lg "%>
+    <%end %>
+  </div>
 </div>
   
     

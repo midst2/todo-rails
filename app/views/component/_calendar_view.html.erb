@@ -1,0 +1,97 @@
+<div class="flex gap-4 justify-center items-center my-8 px-4">
+<% current_date =
+        if params[:year] && params[:month]
+        Date.new(params[:year].to_i, params[:month].to_i, 1)
+        else
+        Date.today.beginning_of_month
+        end %>
+        <% date = current_date.beginning_of_month %>
+        <% start_day = date.wday %> <!-- 0 = Sunday -->
+        <% days_in_month = date.end_of_month.day %>
+
+        <% day_counter = 1 - start_day %>
+
+ 
+
+        <!-- PREVIOUS MONTH -->
+        <%= link_to "<",
+        
+            todos_path(todo_params(
+            month: date.prev_month.month,
+            year: date.prev_month.year
+        )),
+            class: "px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded" %>
+
+ <!-- CURRENT MONTH TITLE -->
+  <h2 class="font-bold text-lg min-w-[200px] text-center">
+    <%= date.strftime("%B %Y") %>
+  </h2>
+        <!-- NEXT MONTH -->
+        <%= link_to ">",
+            todos_path(todo_params(
+                month: (date.next_month.month),
+                year:  (date.next_month.year)
+            )),
+            class: "px-3 py-1 bg-gray-100 rounded hover:bg-gray-200" %>
+
+</div>
+
+<div id="calendar" class="lg:w-full mb-5 rounded-lg" >
+    <table class="w-full table-fixed">
+        <thead class="border-b border-gray-200 h-[50px]">
+            <tr class="text-center">
+                <td>Sun</td>
+                <td>Mon</td>
+                <td>Tue</td>
+                <td>Wed</td>
+                <td>Thu</td>
+                <td>Fri</td>
+                <td>Sat</td>
+            </tr>
+        </thead>
+        <tbody class="text-start">
+        
+
+        <% while day_counter <= days_in_month %> <!-- FIXED FROM 4 -->
+            <tr class="h-[100px] border-gray-200 odd:bg-gray-50 even:bg-white">
+            <% 7.times do %>
+                <td class="text-center align-top p-2 cursor-copy hover:bg-gray-100">
+                <% if day_counter > 0 && day_counter <= days_in_month %>
+
+                    <% cell_date = Date.new(date.year, date.month, day_counter) %>
+                    <% todos = @todos_by_date[cell_date] || [] %>
+                    <% is_today = (cell_date == Date.today) %>
+
+                    <!-- DAY -->
+                    <div class="<%= 'bg-gray-100 rounded-full' if is_today %>">
+                      <%= link_to day_counter, new_todo_path(date: cell_date)%>
+                    </div>
+
+                    <!-- TODOS -->
+                    <div class="flex flex-col gap-1 py-2">
+                    <% if todos.any? %>
+                        <% todos.each do |todo| %>
+                        <%= link_to edit_todo_path(todo.id) do%>
+                        <div class="text-xs truncate px-1 rounded-lg
+                            <%= 
+                                todo.High? ? 'bg-red-200 hover:bg-red-300' :
+                                todo.Medium? ? 'bg-yellow-200 hover:bg-yellow-300' :
+                                'bg-green-200 hover:bg-green-300'
+                            %>">
+                            <%= todo.content %>
+                        </div>
+                        <%end %>
+                        <% end %>
+                    
+                    <% end %>
+                    </div>
+
+                <% end %>
+                </td>
+                <% day_counter += 1 %>
+            <% end %>
+            </tr>
+        <% end %>
+        </tbody>
+    </table>
+</div>

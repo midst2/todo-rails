@@ -10,11 +10,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_24_155035) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_29_092100) do
   create_table "todos", force: :cascade do |t|
     t.string "content"
     t.datetime "created_at", null: false
     t.integer "created_by"
+    t.date "due_date"
+    t.string "folder"
     t.integer "priority"
     t.boolean "status", default: false
     t.datetime "updated_at", null: false

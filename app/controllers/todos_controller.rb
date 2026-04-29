@@ -4,8 +4,36 @@ class TodosController < ApplicationController
 
   # GET /todos or /todos.json
   def index
-    @undone = Todo.where(status: 0, created_by: current_user.id)
-    @done = Todo.where(status: 1, created_by: current_user.id)
+  @selected_folder = params[:folder].presence || "all"
+  @selected_view   = params[:view].presence || "list"
+
+  @folders = Todo.where(created_by: current_user.id).distinct.pluck(:folder)
+
+  # ===== BASE SCOPE =====
+  scope = Todo.where(created_by: current_user.id)
+  scope = scope.where(folder: @selected_folder) unless @selected_folder == "all"
+
+  # ===== LIST VIEW =====
+  @undone = scope.where(status: 0)
+  @done   = scope.where(status: 1)
+
+  # ===== CALENDAR DATE RANGE =====
+  current_date =
+    if params[:year] && params[:month]
+      Date.new(params[:year].to_i, params[:month].to_i, 1)
+    else
+      Date.today.beginning_of_month
+    end
+
+  start_date = current_date.beginning_of_month
+  end_date   = current_date.end_of_month
+
+  # ===== CALENDAR DATA =====
+  @todos_by_date = scope
+    .where(due_date: start_date..end_date)
+    .group_by(&:due_date)
+
+  @current_date = current_date
   end
 
   # GET /todos/1 or /todos/1.json
@@ -68,6 +96,6 @@ class TodosController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def todo_params
-      params.expect(todo: [ :content, :status, :created_by, :priority ])
+      params.expect(todo: [ :content, :status, :created_by, :priority, :folder, :due_date ])
     end
 end

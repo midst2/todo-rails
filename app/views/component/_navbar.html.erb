@@ -1,14 +1,19 @@
 <div class="w-full flex  justify-between p-4 flex-row">
   <div class="flex items-center gap-2">
     <%= link_to "Todo", root_path, class: "text-4xl font-bold" %>
-    <%= image_tag "check.png", class: "w-10 h-10" %>
+    <div class="flex item-center w-5 h-5 animate-spin [animation-duration:10s]">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free v7.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2026 Fonticons, Inc.--><path d="M224 0c17.7 0 32 14.3 32 32l0 168.6 144-83.1c15.3-8.8 34.9-3.6 43.7 11.7s3.6 34.9-11.7 43.7L288 256 432 339.1c15.3 8.8 20.6 28.4 11.7 43.7s-28.4 20.6-43.7 11.7L256 311.4 256 480c0 17.7-14.3 32-32 32s-32-14.3-32-32l0-168.6-144 83.1c-15.3 8.8-34.9 3.6-43.7-11.7S.7 348 16 339.1L160 256 16 172.9C.7 164-4.5 144.5 4.3 129.1S32.7 108.6 48 117.4L192 200.6 192 32c0-17.7 14.3-32 32-32z"/></svg>
+  </div>
   </div>
 
   <% if user_signed_in? %>
-    <%= link_to "Logout",
-  destroy_user_session_path,
-  data: { turbo_method: :delete },
-  class: "bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg" %>
+  <%= link_to destroy_user_session_path,
+  data: { turbo_method: :delete, turbo_confirm: "Ready to logout?" },
+  class: "bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg flex items-center" do%>
+    <div class="w-4 h-4">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--!Font Awesome Free v7.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2026 Fonticons, Inc.--><path fill="rgb(255, 255, 255)" d="M160 96c17.7 0 32-14.3 32-32s-14.3-32-32-32L96 32C43 32 0 75 0 128L0 384c0 53 43 96 96 96l64 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-64 0c-17.7 0-32-14.3-32-32l0-256c0-17.7 14.3-32 32-32l64 0zM502.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-128-128c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L402.7 224 192 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l210.7 0-73.4 73.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l128-128z"/></svg>  
+    </div>
+  <%end %>
   <% else %>
   <div class='flex gap-2'>
     <%= link_to "Login", new_user_session_path, class: "bg-green-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg" %>

@@ -1,0 +1,30 @@
+<div data-controller="dropdown"
+     data-action="click@window->dropdown#closeOutside"
+     class="relative gap-2 items-center">
+
+  <!-- BUTTON -->
+  <button type="button"
+          data-action="click->dropdown#toggle"
+          class="w-full flex items-center rounded-lg bg-neutral-100 hover:bg-neutral-200 hover:cursor-pointer px-4 py-2 gap-2 min-w-[100px]">
+    
+    <div class="w-4 h-4">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--!Font Awesome Free v7.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2026 Fonticons, Inc.--><path fill="rgb(30, 48, 80)" d="M64 400l384 0c8.8 0 16-7.2 16-16l0-240c0-8.8-7.2-16-16-16l-149.3 0c-17.3 0-34.2-5.6-48-16L212.3 83.2c-2.8-2.1-6.1-3.2-9.6-3.2L64 80c-8.8 0-16 7.2-16 16l0 288c0 8.8 7.2 16 16 16zm384 48L64 448c-35.3 0-64-28.7-64-64L0 96C0 60.7 28.7 32 64 32l138.7 0c13.8 0 27.3 4.5 38.4 12.8l38.4 28.8c5.5 4.2 12.3 6.4 19.2 6.4L448 80c35.3 0 64 28.7 64 64l0 240c0 35.3-28.7 64-64 64z"/></svg>
+    </div>
+    <span><%= @selected_folder.capitalize %></span>
+  </button>
+
+  <!-- MENU -->
+  <div data-dropdown-target="menu"
+       class="hidden absolute z-10 mt-1 w-full rounded-lg border border-neutral-200 bg-white shadow-md">
+
+    <% @folders.each do |folder| %>
+      <%= link_to todos_path(todo_params(folder: folder, view: @selected_view)),
+          class: "block px-3 py-2 hover:bg-neutral-100" do %>
+        <%= folder.capitalize %>
+      <% end %>
+    <% end %>
+    <%= link_to  todos_path(todo_params(folder: "all")), class:"block px-3 py-2 hover:bg-neutral-100" do%>
+     All
+     <%end  %>
+  </div>
+</div>
