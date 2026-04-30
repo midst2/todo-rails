@@ -9,7 +9,7 @@
           <span class="bg-red-200 rounded-lg px-3 py-2">High Priority</span>
           <span class="text-gray-500"><%= @undone.where(priority: :High).size%></span>
         </div>
-          <div>
+          <div class="flex flex-col gap-2">
             <% @undone.where(priority: :High).each do |todo| %>
                 <%= render todo %>
             <% end %>
@@ -25,7 +25,7 @@
           <span class="bg-yellow-200 rounded-lg px-3 py-2">Medium Priority</span>
           <span class="text-gray-500"><%= @undone.where(priority: :Medium).size%></span>
         </div>
-          <div>
+          <div class="flex flex-col gap-2">
             <% @undone.where(priority: :Medium).each do |todo| %>
                 <%= render todo %>
             <% end %>
@@ -40,7 +40,7 @@
           <span class="bg-green-200 rounded-lg px-3 py-2">Low Priority</span>
           <span class="text-gray-500"><%= @undone.where(priority: :Low).size%></span>
         </div>
-          <div>
+          <div class="flex flex-col gap-2">
             <% @undone.where(priority: :Low).each do |todo| %>
                 <%= render todo %>
             <% end %>
@@ -57,7 +57,7 @@
           <span class="bg-gray-200 rounded-sm p-1">Done</span>
           <span class="text-gray-500"><%= @done.size%></span>
         </div>
-          <div >
+          <div class="flex flex-col gap-1">
             <% @done.each do |todo| %>
                 <%= render todo %>
             <% end %>

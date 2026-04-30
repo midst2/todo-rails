@@ -1,0 +1,16 @@
+Todo Reminder
+=============
+
+Hi <%= @user.email %>,
+
+This is a reminder that the following task is due tomorrow:
+
+Task: <%= @todo.content %>
+Due Date: <%= @todo.due_date.strftime("%B %d, %Y") %>
+Folder: <%= @todo.folder %>
+Priority: <%= @todo.priority %>
+
+Stay productive!
+
+---
+Sent from your Todo Application

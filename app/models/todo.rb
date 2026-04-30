@@ -1,5 +1,6 @@
 class Todo < ApplicationRecord
   enum :priority, { Low: 0, Medium: 1, High: 2 }
+  belongs_to :user, foreign_key: 'created_by', optional: true
 
   before_validation :set_default
 

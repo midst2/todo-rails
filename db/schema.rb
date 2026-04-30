@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_29_092100) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_29_191430) do
   create_table "todos", force: :cascade do |t|
     t.string "content"
     t.datetime "created_at", null: false
@@ -18,6 +18,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_29_092100) do
     t.date "due_date"
     t.string "folder"
     t.integer "priority"
+    t.datetime "remind_at"
+    t.boolean "reminder_sent", default: false
     t.boolean "status", default: false
     t.datetime "updated_at", null: false
   end

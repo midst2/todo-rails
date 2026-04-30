@@ -44,10 +44,12 @@ class TodosController < ApplicationController
   # GET /todos/new
   def new
     @todo = Todo.new
+    @folders = Todo.where(created_by: current_user.id).distinct.pluck(:folder).compact
   end
 
   # GET /todos/1/edit
   def edit
+    @folders = Todo.where(created_by: current_user.id).distinct.pluck(:folder).compact
   end
 
   # POST /todos or /todos.json
@@ -67,6 +69,11 @@ class TodosController < ApplicationController
 
   # PATCH/PUT /todos/1 or /todos/1.json
   def update
+    # Reset reminder if the user is updating the remind_at time
+    if params.dig(:todo, :remind_at).present? && params.dig(:todo, :remind_at) != @todo.remind_at.to_s
+      @todo.reminder_sent = false
+    end
+
     respond_to do |format|
       if @todo.update(todo_params)
         format.html { redirect_to @todo, notice: "Todo was successfully updated.", status: :see_other }
@@ -96,6 +103,6 @@ class TodosController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def todo_params
-      params.expect(todo: [ :content, :status, :created_by, :priority, :folder, :due_date ])
+      params.expect(todo: [ :content, :status, :created_by, :priority, :folder, :due_date, :remind_at ])
     end
 end

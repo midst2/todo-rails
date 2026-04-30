@@ -1,9 +1,8 @@
 <%= form_with(model: todo, class: "contents") do |form| %>
   <% if todo.errors.any? %>
-    <div id="error_explanation" class="bg-red-50 text-red-500 px-3 py-2 font-medium rounded-md mt-3">
-      <h2><%= pluralize(todo.errors.count, "error") %> prohibited this todo from being saved:</h2>
-
-      <ul class="list-disc ml-6">
+    <div class="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg mb-5 text-sm">
+      <p class="font-semibold mb-1"><%= pluralize(todo.errors.count, "error") %> prevented this from being saved:</p>
+      <ul class="list-disc ml-4 space-y-0.5">
         <% todo.errors.each do |error| %>
           <li><%= error.full_message %></li>
         <% end %>
@@ -11,40 +10,147 @@
     </div>
   <% end %>
 
-  <div class="my-5">
-    <%= form.label :content %>
-    <%= form.textarea :content, rows: 4, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": todo.errors[:content].none?, "border-red-400 focus:outline-red-600": todo.errors[:content].any?}] %> 
+  <%# Task Content %>
+  <div class="mb-4">
+    <label class="block text-sm font-medium text-gray-700 mb-1">Task <span class="text-red-400">*</span></label>
+    <%= form.textarea :content, rows: 3,
+      placeholder: "What do you need to get done?",
+      class: [
+        "block w-full rounded-lg border px-3 py-2 text-sm placeholder-gray-400 focus:outline-none focus:ring-1",
+        { "border-gray-300 focus:ring-neutral-400 focus:border-neutral-400": todo.errors[:content].none?,
+          "border-red-300 focus:ring-red-400": todo.errors[:content].any? }
+      ] %>
   </div>
-  <div class="my-5">
-      <%= form.label :folder %>
-      <%=form.text_field :folder , placeholder:"default" ,class:"block shadow-sm border rounded-md px-3 py-2 border-gray-400"%>
+
+  <%# Folder + Priority %>
+  <div class="grid grid-cols-2 gap-3 mb-4">
+
+    <%# Folder Dropdown %>
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-1">Folder</label>
+      <div data-controller="dropdown"
+           data-action="click@window->dropdown#closeOutside"
+           class="relative">
+
+        <%# Hidden field to hold the real value %>
+        <%= form.hidden_field :folder, id: "folder_value", value: todo.folder.presence || "" %>
+
+        <%# Trigger button %>
+        <button type="button"
+                data-action="click->dropdown#toggle"
+                class="w-full flex items-center justify-between rounded-lg border border-neutral-200 hover:bg-neutral-100 hover:cursor-pointer px-4 py-2 gap-2 text-sm"
+                id="folder_label">
+          <span id="folder_display"><%= todo.folder.presence&.capitalize || "default" %></span>
+          <svg class="w-3 h-3 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+          </svg>
+        </button>
+
+        <%# Dropdown menu %>
+        <div data-dropdown-target="menu"
+             class="hidden absolute z-20 mt-1 w-full rounded-lg border border-neutral-200 bg-white shadow-md text-sm">
+
+          <%# Existing folders %>
+          <% (@folders || []).each do |folder| %>
+            <button type="button"
+                    onclick="selectFolder('<%= folder %>', '<%= folder.capitalize %>', this)"
+                    class="block w-full text-left px-3 py-2 hover:bg-neutral-100">
+              <%= folder.capitalize %>
+            </button>
+          <% end %>
+
+          <%# Divider + New folder input %>
+          <% if (@folders || []).any? %>
+            <div class="border-t border-neutral-100 my-1"></div>
+          <% end %>
+          <div class="px-3 py-2">
+            <input type="text"
+                   placeholder="New folder…"
+                   class="w-full text-sm border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-1 focus:ring-neutral-400"
+                   oninput="updateFolderFromInput(this.value)">
+          </div>
+        </div>
+      </div>
     </div>
-  <div class="my-5">
 
-  <div class="my-5 flex flex-col w-max">
-    <%= form.label :priority %>
-    <%= form.select :priority,
-      Todo.priorities.keys.map { |p| [p.capitalize, p] },
-      {},
-      class: "block px-3 py-2 border border-gray-400 rounded-md shadow-sm" %>
+    <%# Priority Dropdown %>
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-1">Priority <span class="text-red-400">*</span></label>
+      <div data-controller="dropdown"
+           data-action="click@window->dropdown#closeOutside"
+           class="relative">
+
+        <%= form.hidden_field :priority, id: "priority_value", value: todo.priority.presence || "Low" %>
+
+        <button type="button"
+                data-action="click->dropdown#toggle"
+                class="w-full flex items-center justify-between rounded-lg  hover:bg-neutral-100 border border-neutral-200 hover:cursor-pointer px-4 py-2 gap-2 text-sm">
+          <span id="priority_display"><%= (todo.priority.presence || "Low").capitalize %></span>
+          <svg class="w-3 h-3 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+          </svg>
+        </button>
+
+        <div data-dropdown-target="menu"
+             class="hidden absolute z-20 mt-1 w-full rounded-lg border border-neutral-200 bg-white shadow-md text-sm">
+          <% Todo.priorities.keys.each do |p| %>
+            <button type="button"
+                    onclick="selectPriority('<%= p %>', '<%= p.capitalize %>', this)"
+                    class="block w-full text-left px-3 py-2 hover:bg-neutral-100">
+              <%= p.capitalize %>
+            </button>
+          <% end %>
+        </div>
+      </div>
+    </div>
+
   </div>
 
-  <div class="my-5">
-    <%= form.label :due_date%>
-    <% if params[:date].presence %>
-      <%= form.date_field :due_date ,value:params[:date],  class:"block px-3 py-2 border border-gray-400 shadow-sm rounded-lg "%>
-      <%else %>
-      <%= form.date_field :due_date ,  class:"block px-3 py-2 border border-gray-400 shadow-sm rounded-lg "%>
-    <%end %>
-  </div>
-</div>
-  
-    
-    
-    
-    <%= form.hidden_field :created_by, value:current_user.id %>
+  <script>
+    function selectFolder(value, label, btn) {
+      document.getElementById('folder_value').value = value;
+      document.getElementById('folder_display').textContent = label;
+      btn.closest('[data-dropdown-target="menu"]').classList.add('hidden');
+    }
+    function updateFolderFromInput(value) {
+      document.getElementById('folder_value').value = value;
+      document.getElementById('folder_display').textContent = value || 'default';
+    }
+    function selectPriority(value, label, btn) {
+      document.getElementById('priority_value').value = value;
+      document.getElementById('priority_display').textContent = label;
+      btn.closest('[data-dropdown-target="menu"]').classList.add('hidden');
+    }
+  </script>
 
-  <div class="inline">
-    <%= form.submit class: "w-full sm:w-auto rounded-md px-3.5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white inline-block font-medium cursor-pointer" %>
+
+  <%# Due Date + Remind At %>
+  <div class="grid grid-cols-2 gap-3 mb-5">
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-1">Due Date</label>
+      <% if params[:date].presence %>
+        <%= form.date_field :due_date, value: params[:date],
+          class: "block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-neutral-400 focus:border-neutral-400" %>
+      <% else %>
+        <%= form.date_field :due_date,
+          class: "block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-neutral-400 focus:border-neutral-400" %>
+      <% end %>
+    </div>
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-1">Remind Me At</label>
+      <%= form.datetime_local_field :remind_at,
+        class: "block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-neutral-400 focus:border-neutral-400" %>
+      <p class="text-xs text-gray-400 mt-1">Leave blank for 1 day before due date</p>
+    </div>
+  </div>
+
+  <%= form.hidden_field :created_by, value: current_user.id %>
+
+  <%# Actions %>
+  <div class="flex gap-2 pt-1">
+    <%= form.submit todo.persisted? ? "Save Changes" : "Add Task",
+      class: "rounded-lg px-4 py-2 bg-neutral-800 hover:bg-neutral-700 text-white text-sm font-medium cursor-pointer transition" %>
+    <%= link_to "Cancel", todos_path,
+      class: "rounded-lg px-4 py-2 bg-neutral-100 hover:bg-neutral-200 text-neutral-700 text-sm font-medium transition" %>
   </div>
 <% end %>

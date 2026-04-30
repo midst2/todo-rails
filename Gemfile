@@ -70,3 +70,5 @@ gem "tailwindcss-rails", "~> 4.4"
 gem "shadcn-ui", "~> 0.0.15"
 
 gem "devise", "~> 5.0"
+
+gem "dotenv-rails", "~> 3.2", groups: [:development, :test]
