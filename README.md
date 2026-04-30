@@ -1,6 +1,6 @@
 # README
 
-Basic todo app highly inspired by Simple Todo List Notion template
+Basic todo app highly inspired by Simple Todo List Notion template by Pascio
 
 - Basic auth(login, register)
 - Basic state management (Done, Undone)
